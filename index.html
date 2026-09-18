@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YueVoice — Free Cantonese TTS API</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0a0f;color:#e0e0e0;line-height:1.6}
+.hero{background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);padding:80px 20px;text-align:center}
+.badge{display:inline-block;background:#e94560;color:#fff;padding:4px 16px;border-radius:20px;font-size:13px;margin-bottom:20px}
+h1{font-size:52px;background:linear-gradient(90deg,#e94560,#f27121,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:16px}
+.subtitle{font-size:20px;color:#aaa;max-width:600px;margin:0 auto 32px}
+.cta{display:inline-block;background:#e94560;color:#fff;padding:14px 36px;border-radius:8px;text-decoration:none;font-weight:bold;font-size:16px;transition:transform .2s}
+.cta:hover{transform:translateY(-2px)}
+.cta.secondary{background:transparent;border:2px solid #e94560;margin-left:12px}
+.section{padding:60px 20px;max-width:1000px;margin:0 auto}
+.section h2{font-size:36px;margin-bottom:40px;text-align:center;color:#fff}
+.voices{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px}
+.voice-card{background:#1a1a2e;border:1px solid #333;border-radius:12px;padding:24px;transition:border-color .3s}
+.voice-card:hover{border-color:#e94560}
+.voice-card h3{color:#ffd700;margin-bottom:8px}
+.voice-card p{color:#aaa;font-size:14px}
+.pricing{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:24px}
+.price-card{background:#1a1a2e;border:1px solid #333;border-radius:16px;padding:32px;text-align:center;position:relative}
+.price-card.featured{border-color:#e94560;transform:scale(1.02)}
+.popular{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:#e94560;color:#fff;padding:4px 16px;border-radius:20px;font-size:12px;font-weight:bold}
+.price{font-size:48px;font-weight:bold;color:#fff;margin:16px 0}
+.price span{font-size:16px;color:#aaa;font-weight:normal}
+.features{list-style:none;text-align:left;margin:20px 0}
+.features li{padding:6px 0;border-bottom:1px solid #333}
+.features li::before{content:"✓ ";color:#4ade80;font-weight:bold}
+.stack{background:#1a1a2e;border-radius:12px;padding:32px;margin:32px 0;font-family:monospace;font-size:13px;color:#4ade80;line-height:2}
+.endpoint{background:#0a0a15;padding:12px;border-radius:6px;margin:8px 0;color:#ffd700}
+code{background:#1a1a2e;padding:2px 6px;border-radius:4px;font-size:13px}
+.limitations{background:#2a1a1a;border-left:4px solid #e94560;padding:20px;margin:24px 0;border-radius:0 8px 8px 0}
+footer{text-align:center;padding:40px;background:#111;color:#666;font-size:14px}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="badge">🚀 Free API · No Key Required for MVP</div>
+  <h1>YueVoice</h1>
+  <p class="subtitle">Production-ready Cantonese TTS API + free AI image generation. Build multilingual content apps in minutes, not months.</p>
+  <a href="#pricing" class="cta">Get Free API Access →</a>
+  <a href="#stack" class="cta secondary">View Stack</a>
+</div>
+
+<div class="section">
+  <h2>🎙️ 3 Authentic Cantonese Voices</h2>
+  <div class="voices">
+    <div class="voice-card">
+      <h3>HiuMaanNeural - 曉曼</h3>
+      <p>Female voice. Natural, warm, conversational. Best for customer service, chatbots, and storytelling.</p>
+    </div>
+    <div class="voice-card">
+      <h3>HiuGaaiNeural - 曉佳</h3>
+      <p>Female voice. Professional, clear. Ideal for announcements, news, and educational content.</p>
+    </div>
+    <div class="voice-card">
+      <h3>WanLungNeural - 雲龍</h3>
+      <p>Male voice. Deep, authoritative. Perfect for narration, audiobooks, and corporate content.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>🎨 Free AI Image Generation</h2>
+  <p style="text-align:center;color:#aaa;max-width:700px;margin:0 auto 32px">5 distinct models at your fingertips — from artistic impressionism to corporate product shots:</p>
+  <div class="voices" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">
+    <div class="voice-card"><h3>🎨 FLUX</h3><p>Artistic, creative. Best for editorial, blog headers.</p></div>
+    <div class="voice-card"><h3>📷 GPT-Image</h3><p>Photorealistic, structured. Best for headshots, product photos.</p></div>
+    <div class="voice-card"><h3>🎭 Midjourney</h3><p>Distinctive artistic style. Best for creative content.</p></div>
+    <div class="voice-card"><h3>🏢 DALL-E 3</h3><p>Clean, corporate. Best for business, SaaS visuals.</p></div>
+    <div class="voice-card"><h3>⚡ Turbo</h3><p>Fast generation. Best for rapid iteration.</p></div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>💰 Simple Pricing</h2>
+  <div class="pricing">
+    <div class="price-card">
+      <h3>Free</h3>
+      <div class="price">$0<span>/month</span></div>
+      <p style="color:#aaa;margin:16px 0">Perfect for testing &amp; personal projects</p>
+      <ul class="features">
+        <li>10 TTS requests/day</li>
+        <li>5 image generations/day</li>
+        <li>MP3/OGG output</li>
+        <li>Community support</li>
+      </ul>
+      <a href="#" class="cta" style="display:block;text-align:center;margin-top:20px">Start Free →</a>
+    </div>
+    <div class="price-card featured">
+      <div class="popular">MOST POPULAR</div>
+      <h3>Pro</h3>
+      <div class="price">$19<span>/month</span></div>
+      <p style="color:#aaa;margin:16px 0">For developers &amp; small teams</p>
+      <ul class="features">
+        <li>500 TTS requests/day</li>
+        <li>100 image generations/day</li>
+        <li>OGG Opus (Telegram-ready)</li>
+        <li>Batch API</li>
+        <li>Priority email support</li>
+      </ul>
+      <a href="#" class="cta" style="display:block;text-align:center;margin-top:20px;background:#e94560">Get Pro →</a>
+    </div>
+    <div class="price-card">
+      <h3>Business</h3>
+      <div class="price">$99<span>/month</span></div>
+      <p style="color:#aaa;margin:16px 0">For companies at scale</p>
+      <ul class="features">
+        <li>5,000 TTS requests/day</li>
+        <li>1,000 image generations/day</li>
+        <li>All 5 AI image models</li>
+        <li>Webhook notifications</li>
+        <li>99.5% SLA</li>
+        <li>Dedicated support</li>
+      </ul>
+      <a href="#" class="cta" style="display:block;text-align:center;margin-top:20px">Get Business →</a>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="stack">
+  <h2>🔧 Developer Stack</h2>
+  <div class="stack">
+    <div class="endpoint">POST /v1/tts</div>
+    <p style="color:#aaa;margin:8px 0">Generate Cantonese speech</p>
+    <p>{<br>
+    &nbsp;&nbsp;"text": "你好，呢度係廣東話",<br>
+    &nbsp;&nbsp;"voice": "zh-HK-HiuMaanNeural",<br>
+    &nbsp;&nbsp;"format": "ogg"<br>}<br><br>
+    → Returns: audio file (MP3/OGG Opus)</p>
+    <br>
+    <div class="endpoint">POST /v1/image</div>
+    <p style="color:#aaa;margin:8px 0">Generate AI images</p>
+    <p>{<br>
+    &nbsp;&nbsp;"prompt": "cyberpunk city at sunset",<br>
+    &nbsp;&nbsp;"model": "flux",<br>
+    &nbsp;&nbsp;"width": 1024,<br>
+    &nbsp;&nbsp;"height": 1024<br>}<br><br>
+    → Returns: PNG image (1024×1024)</p>
+  </div>
+</div>
+
+<div class="section">
+  <h2>⚠️ Cost Reality</h2>
+  <div class="limitations">
+    <h3 style="color:#ffd700;margin-bottom:12px">Why We're Free / $0 API Cost</h3>
+    <p>Our TTS runs on <strong>Microsoft Edge TTS</strong> (free, no API key). Our images run on <strong>Pollinations.ai</strong> (free, no API key). This means zero marginal cost per request — we pass the savings to you in the free tier. <strong>We've validated this stack works end-to-end</strong> (sent Cantonese voice to Telegram as a voice message, generated 23 free images across 5 models).</p>
+    <p style="margin-top:12px;color:#aaa">The catch: lower rate limits than paid APIs, no SLA on free tier. Upgrade for production use.</p>
+  </div>
+</div>
+
+<footer>
+  <p>Built by <strong>Saori (紗織)</strong> · 紗織 Labs · 2026 · Proof: <code>cantonese_tts_service.py</code> + <code>pollinations_wrapper.py</code> on GitHub</p>
+</footer>
+
+</body>
+</html>

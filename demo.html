@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YueVoice Live Demo — Cantonese TTS API</title>
+<script src="https://js.stripe.com/v3/" async></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a0a0f;color:#e0e0e0;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:40px 20px}
+.header{text-align:center;margin-bottom:40px;max-width:700px}
+.badge{display:inline-block;background:#e94560;color:#fff;padding:6px 16px;border-radius:20px;font-size:13px;margin-bottom:16px}
+h1{font-size:42px;background:linear-gradient(90deg,#e94560,#f27121,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:12px}
+p.sub{color:#aaa;font-size:16px}
+.demo{background:#1a1a2e;border:1px solid #333;border-radius:16px;padding:32px;max-width:700px;width:100%;margin-bottom:24px}
+.demo h2{color:#fff;margin-bottom:20px;font-size:22px}
+.input-group{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+select,textarea{background:#0a0a15;border:1px solid #333;border-radius:8px;padding:12px;color:#e0e0e0;font-size:14px}
+select{min-width:200px}
+textarea{flex:1;min-width:280px;min-height:80px;resize:vertical;font-family:inherit}
+button{background:#e94560;color:#fff;border:none;border-radius:8px;padding:14px 28px;font-size:15px;font-weight:bold;cursor:pointer;transition:all .2s}
+button:hover:not(:disabled){background:#d13a56;transform:translateY(-1px)}
+button:disabled{background:#444;color:#888;cursor:not-allowed;transform:none}
+button.secondary{background:transparent;border:2px solid #e94560;color:#e94560}
+button.secondary:hover:not(:disabled){background:#e94560;color:#fff}
+.audio-player{margin-top:20px;padding:16px;background:#0a0a15;border-radius:8px;border:1px solid #333;display:none}
+audio{width:100%;margin-top:8px}
+.status{margin-top:12px;padding:12px;border-radius:8px;display:none}
+.status.ok{background:#1a3a1a;color:#4ade80;display:block}
+.status.err{background:#3a1a1a;color:#e94560;display:block}
+.footer{text-align:center;color:#666;font-size:13px;margin-top:40px}
+code{background:#1a1a2e;padding:2px 6px;border-radius:4px;font-size:13px;color:#ffd700}
+.pricing-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:24px;padding-top:24px;border-top:1px solid #333}
+.price-btn{background:#1a1a2e;border:1px solid #333;border-radius:12px;padding:20px;min-width:180px;text-align:center;transition:border-color .3s}
+.price-btn:hover{border-color:#e94560}
+.price-btn.featured{border-color:#e94560;box-shadow:0 0 20px rgba(233,69,96,0.2)}
+.price-label{font-size:12px;color:#aaa;text-transform:uppercase}
+.price-amount{font-size:28px;font-weight:bold;color:#fff;margin:8px 0}
+.price-amount span{font-size:14px;font-weight:normal;color:#aaa}
+.price-features{font-size:12px;color:#888;line-height:1.8;text-align:left;margin:16px 0}
+.toast{position:fixed;bottom:24px;right:24px;background:#1a1a2e;border:1px solid #333;padding:16px 24px;border-radius:8px;z-index:9999;display:none}
+.toast.show{display:block;animation:slideIn .3s}
+@keyframes slideIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.toast.success{border-color:#4ade80}
+.toast.error{border-color:#e94560}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid #fff;border-radius:50%;border-top-color:transparent;animation:spin .8s linear infinite;margin-right:8px;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="badge">🔴 LIVE — calling real API on port 8000</div>
+  <h1>YueVoice</h1>
+  <p class="sub">Cantonese TTS API — 3 voices, MP3/OGG, free tier available. Type Cantonese text, pick a voice, hit Generate.</p>
+</div>
+
+<div class="demo">
+  <h2>🎙️ Live TTS Generator</h2>
+  <div class="input-group">
+    <select id="voice">
+      <option value="zh-HK-HiuMaanNeural">HiuMaanNeural (Female, natural)</option>
+      <option value="zh-HK-HiuGaaiNeural">HiuGaaiNeural (Female, warm)</option>
+      <option value="zh-HK-WanLungNeural">WanLungNeural (Male, deep)</option>
+    </select>
+    <select id="format">
+      <option value="ogg">OGG Opus (Telegram-ready)</option>
+      <option value="mp3">MP3</option>
+    </select>
+  </div>
+  <textarea id="text" placeholder="輸入廣東話文字... e.g. 你好，呢個係 YueVoice 即時演示。">你好，呢個係 YueVoice 即時演示。我哋提供三款免費嘅粵語聲線，歡迎試用！</textarea>
+  <button id="btn" onclick="generate()">Generate & Play</button>
+  <div id="status" class="status"></div>
+  <div id="player" class="audio-player">
+    <strong>Result:</strong>
+    <audio id="audio" controls></audio>
+    <div style="margin-top:8px;font-size:12px;color:#aaa">
+      Job ID: <span id="jobid"></span> | Duration: <span id="dur"></span>s | Format: <span id="fmt"></span> | Tier: <span id="tier"></span>
+    </div>
+  </div>
+</div>
+
+<div class="demo" style="padding:24px">
+  <h2>💰 Upgrade for Higher Limits</h2>
+  <p style="color:#aaa;text-align:center;margin-bottom:16px">Free tier: 10 TTS/day. Upgrade for 500/day (Pro) or 5,000/day (Business).</p>
+  <div class="pricing-row">
+    <div class="price-btn">
+      <div class="price-label">Free</div>
+      <div class="price-amount">$0<span>/mo</span></div>
+      <div class="price-features">10 TTS/day<br>5 images/day<br>Community support</div>
+      <button class="cta secondary" style="width:100%;margin-top:12px" onclick="selectTier('free')">Current Plan</button>
+    </div>
+    <div class="price-btn featured">
+      <div class="price-label">Pro</div>
+      <div class="price-amount">$19<span>/mo</span></div>
+      <div class="price-features">500 TTS/day<br>100 images/day<br>Priority support<br>Batch API</div>
+      <button class="cta" style="width:100%;margin-top:12px" onclick="checkout('pro')">Upgrade to Pro</button>
+    </div>
+    <div class="price-btn">
+      <div class="price-label">Business</div>
+      <div class="price-amount">$99<span>/mo</span></div>
+      <div class="price-features">5,000 TTS/day<br>1,000 images/day<br>Webhooks + SLA<br>Dedicated support</div>
+      <button class="cta" style="width:100%;margin-top:12px" onclick="checkout('business')">Upgrade to Business</button>
+    </div>
+  </div>
+</div>
+
+<div class="demo" style="padding:24px">
+  <h2>📡 API Reference</h2>
+  <pre style="background:#0a0a15;padding:16px;border-radius:8px;overflow-x:auto;font-size:13px;color:#aaa"><code>POST /tts
+{
+  "text": "你好，呢度係廣東話",
+  "voice": "zh-HK-HiuMaanNeural",
+  "format": "ogg",
+  "user_id": "demo"
+}
+
+Response:
+{
+  "job_id": "a394a2da",
+  "status": "completed",
+  "audio_url": "/audio/tts_a394a2da.ogg",
+  "duration_seconds": 4.85,
+  "tier": "free"
+}</code></pre>
+</div>
+
+<div class="footer">
+  YueVoice — Cantonese TTS + Image SaaS · Built by <strong>Saori (紗織)</strong> · <code>cantonese_tts_service.py</code> + <code>pollinations_wrapper.py</code>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = 'http://127.0.0.1:8000';
+const btn = document.getElementById('btn');
+const status = document.getElementById('status');
+const player = document.getElementById('player');
+const audio = document.getElementById('audio');
+const jobid = document.getElementById('jobid');
+const dur = document.getElementById('dur');
+const fmt = document.getElementById('fmt');
+const tierEl = document.getElementById('tier');
+
+function showToast(message, type = 'info') {
+  const toast = document.getElementById('toast');
+  toast.textContent = message;
+  toast.className = `toast ${type} show`;
+  setTimeout(() => toast.classList.remove('show'), 5000);
+}
+
+function setButtonLoading(btn, loading, originalText) {
+  if (loading) {
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Loading...';
+  } else {
+    btn.disabled = false;
+    btn.innerHTML = originalText;
+  }
+}
+
+async function generate() {
+  const text = document.getElementById('text').value.trim();
+  const voice = document.getElementById('voice').value;
+  const format = document.getElementById('format').value;
+  if (!text) { alert('Please enter text'); return; }
+  
+  btn.disabled = true;
+  btn.textContent = 'Generating...';
+  status.className = 'status';
+  status.textContent = '';
+  player.style.display = 'none';
+  
+  try {
+    const res = await fetch(API + '/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, voice, format, user_id: 'demo' })
+    });
+    const data = await res.json();
+    
+    if (data.status === 'completed') {
+      status.className = 'status ok';
+      status.textContent = `✅ Success! Job ${data.job_id}, ${data.duration_seconds.toFixed(2)}s`;
+      jobid.textContent = data.job_id;
+      dur.textContent = data.duration_seconds.toFixed(2);
+      fmt.textContent = format.toUpperCase();
+      tierEl.textContent = data.tier || 'free';
+      audio.src = API + data.audio_url;
+      audio.load();
+      player.style.display = 'block';
+    } else {
+      status.className = 'status err';
+      status.textContent = '❌ ' + (data.error || 'Unknown error');
+    }
+  } catch (e) {
+    status.className = 'status err';
+    status.textContent = '❌ Network error: ' + e.message;
+  }
+  
+  btn.disabled = false;
+  btn.textContent = 'Generate & Play';
+}
+
+function selectTier(tier) {
+  if (tier === 'free') {
+    showToast('Free tier selected! Using demo API with 10 requests/day limit.', 'success');
+  }
+}
+
+async function checkout(tier) {
+  const btn = event.target;
+  const originalText = btn.innerHTML;
+  setButtonLoading(btn, true, originalText);
+
+  try {
+    const res = await fetch(API + '/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tier,
+        user_id: 'demo-' + Date.now(),
+        success_url: window.location.origin + '/success.html?session_id={CHECKOUT_SESSION_ID}',
+        cancel_url: window.location.href
+      })
+    });
+    const data = await res.json();
+    if (data.url) {
+      showToast('Redirecting to Stripe Checkout...', 'success');
+      setTimeout(() => window.location.href = data.url, 1000);
+    } else {
+      throw new Error(data.error || 'Checkout failed');
+    }
+  } catch (e) {
+    showToast('Checkout failed: ' + e.message, 'error');
+    console.error(e);
+  } finally {
+    setButtonLoading(btn, false, originalText);
+  }
+}
+</script>
+</body>
+</html>
