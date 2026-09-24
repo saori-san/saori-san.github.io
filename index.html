@@ -322,10 +322,16 @@ document.getElementById('preorderForm').addEventListener('submit', async (e) => 
   btn.textContent = 'Joining...';
 
   try {
+    const fd = new FormData(form);
+    const payload = JSON.stringify({
+      email: fd.get('email'),
+      name: fd.get('name'),
+      tier: fd.get('tier') || 'free'
+    });
     const res = await fetch(API_BASE + '/api/waitlist', {
       method: 'POST',
-      body: new FormData(form),
-      headers: { 'Accept': 'application/json' }
+      body: payload,
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' }
     });
     const data = await res.json();
     if (data.success) {
