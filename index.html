@@ -114,11 +114,11 @@ footer{text-align:center;padding:40px;background:#111;color:#666;font-size:14px}
     <h4>Test Prompt: "我係一個software engineer，平日好鍾意coding，especially Cantonese NLP projects."</h4>
     <div class="compare-row">
       <span style="color:#aaa;width:120px;">Edge TTS (Free):</span>
-      <audio controls src="audio/edge_sample.mp3" preload="none"></audio>
+      <audio controls src="https://edge-tts-demo.yuevoice.com/edge_sample.mp3" preload="none"></audio>
     </div>
     <div class="compare-row">
       <span style="color:#e94560;width:120px;">YueVoice Pro:</span>
-      <audio controls src="audio/pro_sample.mp3" preload="none"></audio>
+      <audio controls src="https://yuevoice-demo.s3.amazonaws.com/pro_sample.mp3" preload="none"></audio>
     </div>
   </div>
 
@@ -130,7 +130,7 @@ footer{text-align:center;padding:40px;background:#111;color:#666;font-size:14px}
     </div>
     <div class="compare-row">
       <span style="color:#e94560;width:120px;">YueVoice Pro:</span>
-      <audio controls src="audio/jyutping_sample.mp3" preload="none"></audio>
+      <audio controls src="https://yuevoice-demo.s3.amazonaws.com/jyutping_sample.mp3" preload="none"></audio>
     </div>
   </div>
 
@@ -139,21 +139,21 @@ footer{text-align:center;padding:40px;background:#111;color:#666;font-size:14px}
       <h4>HiuMaanNeural - 曉曼 (Female, Warm)</h4>
       <p style="color:#aaa;font-size:14px;margin-bottom:12px">Conversational, storytelling, customer service</p>
       <audio controls preload="none">
-        <source src="audio/hiumaan.mp3" type="audio/mpeg">
+        <source src="https://edge-tts-demo.yuevoice.com/hiumaan.mp3" type="audio/mpeg">
       </audio>
     </div>
     <div class="demo-card">
       <h4>HiuGaaiNeural - 曉佳 (Female, Professional)</h4>
       <p style="color:#aaa;font-size:14px;margin-bottom:12px">Announcements, news, educational content</p>
       <audio controls preload="none">
-        <source src="audio/hiugaai.mp3" type="audio/mpeg">
+        <source src="https://edge-tts-demo.yuevoice.com/hiugaai.mp3" type="audio/mpeg">
       </audio>
     </div>
     <div class="demo-card">
       <h4>WanLungNeural - 雲龍 (Male, Deep)</h4>
       <p style="color:#aaa;font-size:14px;margin-bottom:12px">Narration, audiobooks, corporate</p>
       <audio controls preload="none">
-        <source src="audio/wanlung.mp3" type="audio/mpeg">
+        <source src="https://edge-tts-demo.yuevoice.com/wanlung.mp3" type="audio/mpeg">
       </audio>
     </div>
   </div>
@@ -220,7 +220,7 @@ footer{text-align:center;padding:40px;background:#111;color:#666;font-size:14px}
   <div class="preorder">
     <h3>Reserve Your Spot</h3>
     <p>No payment now. We'll email you when beta opens.</p>
-    <form id="preorderForm" action="https://yuevoice-api.fly.dev/api/waitlist" method="POST">
+    <form id="preorderForm" onsubmit="return false">
       <div class="form-group">
         <input type="text" name="name" placeholder="Your Name" required>
         <input type="email" name="email" placeholder="Email Address" required>
@@ -305,7 +305,8 @@ footer{text-align:center;padding:40px;background:#111;color:#666;font-size:14px}
 
 <script>
 // Waitlist counter
-fetch('https://yuevoice-api.fly.dev/api/waitlist/count')
+const API_BASE = 'https://podcasts-arising-threatening-media.trycloudflare.com';
+fetch(API_BASE + '/api/waitlist/count')
   .then(r => r.json())
   .then(data => {
     document.getElementById('waitlistCount').textContent = data.count || 0;
@@ -321,7 +322,7 @@ document.getElementById('preorderForm').addEventListener('submit', async (e) => 
   btn.textContent = 'Joining...';
 
   try {
-    const res = await fetch(form.action, {
+    const res = await fetch(API_BASE + '/api/waitlist', {
       method: 'POST',
       body: new FormData(form),
       headers: { 'Accept': 'application/json' }
